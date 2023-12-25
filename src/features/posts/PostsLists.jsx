@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react'
-// import { POSTS_API_URL } from '../../constants'
+import { POSTS_API_URL } from '../../constants'
 
 export const PostsLists = () => {
   const [posts, setPosts] = useState([]);
   const [, setLoading] = useState(true);
   const [, setError] = useState(null);
 
+
   useEffect(() => {
     async function loadPosts() {
       try {
-        const response = await fetch("http://localhost:3000/api/v1/posts");
+        // const response = await fetch("http://localhost:3000/api/v1/posts");
+        const response = await fetch(POSTS_API_URL);
         if (response.ok) {
           const json = await response.json();
           // console.log(json);
