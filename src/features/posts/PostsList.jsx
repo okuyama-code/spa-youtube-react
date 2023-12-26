@@ -62,6 +62,8 @@ export const PostsList = () => {
           </h2>
           {/* <p>{post.body}</p> */}
           <div className='post-links'>
+            <Link to={`/posts/${post.id}/edit`}>Edit</Link>
+            {" | "}
             <button onClick={() => deletePost(post.id)}>Delete</button>
           </div>
         </div>

@@ -50,6 +50,8 @@ export const PostDetails = () => {
       <h2>Post ID: {id}</h2>
       <h2>{post.title}</h2>
       <p>{post.body}</p>
+      <Link to={`/posts/${post.id}/edit`}>Edit Pageへ</Link>
+      {" | "}
       <Link to="/">Back to Home</Link>
       {" | "}
       <button onClick={deletePost}>Delete</button>
