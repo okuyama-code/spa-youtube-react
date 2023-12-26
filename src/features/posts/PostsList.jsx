@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { POSTS_API_URL } from '../../constants'
 import { Link } from 'react-router-dom';
 
-export const PostsLists = () => {
+export const PostsList = () => {
   const [posts, setPosts] = useState([]);
   const [, setLoading] = useState(true);
   const [, setError] = useState(null);
@@ -30,6 +30,23 @@ export const PostsLists = () => {
     loadPosts();
   }, []);
 
+  const deletePost = async (id) => {
+    try {
+      const response = await fetch(`${POSTS_API_URL}/${id}`, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+
+        // 特定のidに一致しない投稿のみを残す
+        // 関数内でtrueが返ってきたもののみを抽出
+        setPosts(posts.filter((post) => post.id !== id));
+      } else {
+        throw response;
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
   return (
     <div>
@@ -43,7 +60,10 @@ export const PostsLists = () => {
               {post.title}
             </Link>
           </h2>
-          <p>{post.body}</p>
+          {/* <p>{post.body}</p> */}
+          <div className='post-links'>
+            <button onClick={() => deletePost(post.id)}>Delete</button>
+          </div>
         </div>
       ))}
     </div>
