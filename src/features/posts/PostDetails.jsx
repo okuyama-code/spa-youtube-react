@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { POSTS_API_URL } from '../../constants';
+import { deletePost, fetchPost } from '../../services/postService';
 
 export const PostDetails = () => {
   const [post, setPost] = useState(null);
@@ -12,14 +13,8 @@ export const PostDetails = () => {
   useEffect(() => {
     const fetchCurrentPost = async () => {
       try {
-        const response = await fetch(`${POSTS_API_URL}/${id}`);
-        if (response.ok) {
-          // JSONデータを取得して状態を更新
-          const json = await response.json();
-          setPost(json);
-        } else {
-          throw response;
-        }
+        const json = await fetchPost(id);
+        setPost(json);
       } catch (e) {
         console.log("エラーが発生しました" ,e)
       }
@@ -27,19 +22,12 @@ export const PostDetails = () => {
     fetchCurrentPost();
   }, [id])
 
-  const deletePost = async () => {
+  const deletePostHandler = async () => {
     try {
-      const response = await fetch(`${POSTS_API_URL}/${id}`, {
-        method: "DELETE",
-      });
-      if (response.ok) {
-        navigate("/")
-      } else {
-        // 例外を投げる。例外とはプログラム実行時に発生する予期せぬエラーのこと
-        throw response;
-      }
+      await deletePost(post.id)
+      navigate("/")
     } catch (e) {
-      console.log("エラー", e)
+      console.error("削除に失敗しました", e)
     }
   }
 
@@ -54,7 +42,7 @@ export const PostDetails = () => {
       {" | "}
       <Link to="/">Back to Home</Link>
       {" | "}
-      <button onClick={deletePost}>Delete</button>
+      <button onClick={deletePostHandler}>Delete</button>
     </div>
   )
 }

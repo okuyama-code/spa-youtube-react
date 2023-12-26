@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { POSTS_API_URL } from '../../constants'
+import { fetchAllPosts, deletePost } from '../../services/postService'
 import { Link } from 'react-router-dom';
 
 export const PostsList = () => {
@@ -11,40 +11,25 @@ export const PostsList = () => {
   useEffect(() => {
     async function loadPosts() {
       try {
-        // const response = await fetch("http://localhost:3000/api/v1/posts");
-        const response = await fetch(POSTS_API_URL);
-        if (response.ok) {
-          const json = await response.json();
-          // console.log(json);
-          setPosts(json);
-        } else {
-          throw response;
-        }
-      } catch(e) {
-        setError("エラーが発生しました。")
-        console.log("エラーが発生しました", e);
-      } finally {
+        const data = await fetchAllPosts();
+        setPosts(data);
+        setLoading(false);
+      } catch (e) {
+        setError(e);
         setLoading(false);
       }
     }
     loadPosts();
   }, []);
 
-  const deletePost = async (id) => {
+  const deletePostHandler = async (id) => {
     try {
-      const response = await fetch(`${POSTS_API_URL}/${id}`, {
-        method: "DELETE",
-      });
-      if (response.ok) {
-
+        await deletePost(id);
         // 特定のidに一致しない投稿のみを残す
         // 関数内でtrueが返ってきたもののみを抽出
-        setPosts(posts.filter((post) => post.id !== id));
-      } else {
-        throw response;
-      }
+        setPosts((prevPosts) => prevPosts.filter((post) => post.id !== id));
     } catch (e) {
-      console.log(e);
+      console.error("Failed to delete the post: ", e);
     }
   }
 
@@ -64,7 +49,7 @@ export const PostsList = () => {
           <div className='post-links'>
             <Link to={`/posts/${post.id}/edit`}>Edit</Link>
             {" | "}
-            <button onClick={() => deletePost(post.id)}>Delete</button>
+            <button onClick={() => deletePostHandler(post.id)}>Delete</button>
           </div>
         </div>
       ))}
