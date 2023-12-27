@@ -36,10 +36,12 @@ async function createPost(postData) {
 async function updatePost(id, postData) {
   const response = await fetch(`${POSTS_API_URL}/${id}`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(postData),
+    // Doesn't need headers because it's a formData
+    // headers: {
+    //   "Content-Type": "application/json",
+    // },
+    // body: JSON.stringify(postData),
+    body: postData
   });
   if (!response.ok) {
     throw new Error(response.statusText);
