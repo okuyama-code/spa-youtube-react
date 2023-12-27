@@ -4,11 +4,15 @@ import { createPost } from '../../services/postService';
 import PostForm from "./PostForm"
 
 export const NewPostForm = () => {
-  const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
   const navigate = useNavigate();
 
-  const handleCreateSubmit = async (formData) => {
+  const handleCreateSubmit = async (rawData) => {
+    // lets create the formData object(formData オブジェクトを作成しましょう)
+    const formData = new FormData();
+    formData.append("post[title]", rawData.title)
+    formData.append("post[body]", rawData.body)
+    formData.append("post[image]", rawData.image)
+
     try {
       const response = await createPost(formData)
       console.log(response);

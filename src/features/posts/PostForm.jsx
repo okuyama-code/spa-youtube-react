@@ -6,7 +6,7 @@ function PostForm({ post, headerText, onSubmit, buttonText }) {
     post || {
       title: "",
       body: "",
-      // image: "",
+      image: "",
     }
   );
 
@@ -33,7 +33,7 @@ function PostForm({ post, headerText, onSubmit, buttonText }) {
             }
           />
         </div>
-        {/* <div>
+        <div>
           <label htmlFor="image">Image:</label>
           <input
             id="image"
@@ -47,7 +47,7 @@ function PostForm({ post, headerText, onSubmit, buttonText }) {
               console.log(e.target.files[0]);
             }}
           />
-        </div> */}
+        </div>
         <div>
           <label htmlFor="body">Body:</label>
           <textarea
