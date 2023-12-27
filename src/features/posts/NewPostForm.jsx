@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { POSTS_API_URL } from '../../constants';
+import { createPost } from '../../services/postService';
 
 export const NewPostForm = () => {
   const [title, setTitle] = useState("");
@@ -12,20 +12,12 @@ export const NewPostForm = () => {
 
     const postData = { title, body };
 
-    const response = await fetch(`${POSTS_API_URL}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(postData),
-    });
-
-    if (response.ok) {
-      const { id } = await response.json();
-      // console.log(id);
-      navigate(`/posts/${id}`);
-    } else {
-      console.log("エラーがあります")
+    try {
+      const response = await createPost(postData)
+      console.log(response);
+       navigate(`/posts/${response.id}`);
+    } catch (e) {
+      console.error("投稿に失敗", e);
     }
   }
 

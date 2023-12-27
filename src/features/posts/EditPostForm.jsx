@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { POSTS_API_URL } from '../../constants';
+import { updatePost } from '../../services/postService';
 
 const EditPostForm = () => {
   const [post, setPost] = useState(null);
@@ -32,28 +33,20 @@ const EditPostForm = () => {
 
   const handleSubmit= async (e) => {
     e.preventDefault();
+    const updatedPost = {
+      title: post.title,
+      body: post.body
+    }
+
     try {
-      const res = await fetch(`${POSTS_API_URL}/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title: post.title,
-          body: post.body,
-        }),
-      });
-      if (res.ok) {
-        const json = await res.json();
-        console.log("Success", json);
-        navigate(`/posts/${id}`);
-      } else {
-        throw res;
-      }
+      const response = await updatePost(id, updatedPost)
+      navigate(`/posts/${response.id}`)
     } catch(e) {
       console.log(e)
     }
   }
+
+  if (!post) return <h2>Loading...</h2>
 
   return (
     <div>
