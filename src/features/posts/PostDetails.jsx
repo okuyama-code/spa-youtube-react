@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { POSTS_API_URL } from '../../constants';
 import { deletePost, fetchPost } from '../../services/postService';
+import "./PostImage.css"
+
 
 export const PostDetails = () => {
   const [post, setPost] = useState(null);
@@ -37,6 +38,8 @@ export const PostDetails = () => {
     <div>
       <h2>Post ID: {id}</h2>
       <h2>{post.title}</h2>
+      {/* post.image_urlが存在する場合に、<img>要素を描画します。&&は論理 AND 演算子で、左辺が true の場合に右辺を評価します。 */}
+      {post.image_url && (<img src={post.image_url} alt={post.title} className='post-image' />)}
       <p>{post.body}</p>
       <Link to={`/posts/${post.id}/edit`}>Edit Pageへ</Link>
       {" | "}
