@@ -1,3 +1,3 @@
-## SPA海外youtube 21まで　(テストなし)
-## 現在のbranch serch
-## rails と同じブランチで共有
+## SPA海外youtube part27 paginationの実装編
+## 現在のbranch part27
+
