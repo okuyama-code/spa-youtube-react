@@ -3,26 +3,46 @@ import { fetchAllPosts, deletePost } from '../../services/postService'
 import { Link } from 'react-router-dom';
 import "./PostImage.css"
 
+import usePostsData from "../../hooks/usePostsData"
+import useURLSearchParam from "../../hooks/useURLSearchParam"
+import SearchBar from './SearchBar';
+
 
 export const PostsList = () => {
   const [posts, setPosts] = useState([]);
-  const [, setLoading] = useState(true);
-  const [, setError] = useState(null);
+  // const [, setLoading] = useState(true);
+  // const [, setError] = useState(null);
+  // searchTerm 検索語
+  const [searchTerm, setSearchTerm] = useState("");
+  // 、Reactのカスタムフック useURLSearchParams を使用して、URLのクエリパラメータを取得し、デバウンス（遅延実行）された検索キーワードを状態として管理するコードです。
+  const [debouncedSearchTerm, setDebouncedSearchTerm] =
+    useURLSearchParam("search");
 
+  const {
+    posts: fetchedPosts,
+    loading,
+    error,
+  } = usePostsData(debouncedSearchTerm); // Note the change here
 
   useEffect(() => {
-    async function loadPosts() {
-      try {
-        const data = await fetchAllPosts();
-        setPosts(data);
-        setLoading(false);
-      } catch (e) {
-        setError(e);
-        setLoading(false);
-      }
+    if (fetchedPosts) {
+      setPosts(fetchedPosts); // Update the posts state once fetchedPosts is available
     }
-    loadPosts();
-  }, []);
+  }, [fetchedPosts]);
+
+  // useEffect(() => {
+  //   async function loadPosts() {
+  //     try {
+  //       const data = await fetchAllPosts();
+  //       setPosts(data);
+  //       setLoading(false);
+  //     } catch (e) {
+  //       setError(e);
+  //       setLoading(false);
+  //     }
+  //   }
+  //   loadPosts();
+  // }, []);
 
   const deletePostHandler = async (id) => {
     try {
@@ -35,8 +55,26 @@ export const PostsList = () => {
     }
   }
 
+  // part26 追記
+  // すぐに Immediate
+  const handleImmediateSearchChange = (searchValue) => {
+    setSearchTerm(searchValue);
+  };
+
+  // debounceとは  イベントを呼び出し後、次のイベントまで指定した時間が経過するまではイベントを発生させない処理。
+  const handleDebouncedSearchChange = (searchValue) => {
+    setDebouncedSearchTerm(searchValue);
+  };
+
   return (
     <div>
+      <SearchBar
+        value={searchTerm}
+        onSearchChange={handleDebouncedSearchChange}
+        onImmediateChange={handleImmediateSearchChange}
+      />
+      {loading && (<p>Loading...</p>)}
+      {error && (<p>Error loading posts.(投稿の読み込み中にエラーが発生しました。)</p>)}
       {posts.map((post) => (
         <div
           key={post.id}

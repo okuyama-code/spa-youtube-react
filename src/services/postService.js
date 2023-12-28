@@ -1,4 +1,4 @@
-import { POSTS_API_URL } from "../constants";
+import { POSTS_API_URL, SEARCH_API_URL } from "../constants";
 
 async function fetchAllPosts() {
   const response = await fetch(`${POSTS_API_URL}`);
@@ -62,6 +62,15 @@ async function deletePost(id) {
   throw new Error(response.statusText);
 }
 
+async function searchPosts(query) {
+  // api/v1/search + /posts/?q=t...
+  const response = await fetch(`${SEARCH_API_URL}/posts/?q=${query}`);
+  if (!response.ok) {
+    throw new Error(response.statusText);
+  }
+  return response.json();
+}
 
 
-export { fetchAllPosts, deletePost, fetchPost, createPost, updatePost };
+
+export { fetchAllPosts, deletePost, fetchPost, createPost, updatePost, searchPosts };
